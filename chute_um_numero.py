@@ -51,43 +51,26 @@ def mostrarTelaDeSucesso(numeroSortido):
   ]
   return sg.Window("Guia",tela5, finalize=True)
 
-def pulaLinhaNoConsole():
-  print("\r\n")
-
-def pegaNumeroMaximo():
-  numeroMaximo = int(input("Este programa é um jogo para você acertar um número. Ele sorteia um número de 0 até um número máximo de sua escolha e depois te guia até acertar o número. Digite um número máximo para ele sortear um número para você chutar depois:\r\n"))
-  return numeroMaximo
-
-def pegaChuteInicial(numeroMaximo):
-  chute = int(input("Chute um numero entre 0 e " + str(numeroMaximo) + ":\r\n"))
-  return chute
-
 def pegaNumeroSortido(numeroMaximo):
   numeroMaximo= numeroMaximo + 1
   numeroAleatorio = int(random()*numeroMaximo)
   return numeroAleatorio
 
-def mostraAcertoDoChute(chute,numeroSortido):
-  if chute == numeroSortido :
-    pulaLinhaNoConsole()
-    print("Você descobriu o número sortido. O número sortido foi o " + str(numeroSortido))
+def func0(chute,numeroSortido):
+  if chute == numeroSortido:
+    return mostrarTelaDeSucesso(numeroSortido)
 
-def pedeChuteNovamente():
-  chute = int(input("Por favor, chute novamente um número. Digite seu chute:"))
-  return chute
+def func1(chute,numeroSortido,numeroMaximo):
+  if chute < numeroSortido:
+    return mostrarTelaChuteFoiMenor(numeroMaximo)
 
-def continuaTentandoChutar(chute,numeroSortido):
-  while chute != numeroSortido:
-    if chute > numeroSortido:
-      pulaLinhaNoConsole()
-      print("O seu chute foi maior que o número sortido")
-      chute = pedeChuteNovamente()
-    if chute < numeroSortido:
-      pulaLinhaNoConsole()
-      print("O seu chute foi menor que o número sortido")
-      chute = pedeChuteNovamente()
-    mostraAcertoDoChute(chute,numeroSortido)
+def func2(chute,numeroSortido,numeroMaximo):
+  if chute > numeroSortido:
+    return mostrarTelaChuteFoiMaior(numeroMaximo)
 
+def casoPararPrograma(window,janela1,janela2,janela3,janela4,janela5,events):
+  return (window == janela1 or window == janela2 or window == janela3 or window == janela4 or window == janela5 ) and (events == sg.WIN_CLOSED or events == "Fechar")
+    
 # Telas 
 janela1 = mostrarTelaInicial()
 janela2 = None
@@ -97,10 +80,11 @@ janela5 = None
 numeroMaximo = 0
 numeroSortido = 0
 chute = 0
+
 # Loop
 while True:
   window, events, values = sg.read_all_windows()
-  if (window == janela1 or window == janela2 or window == janela3 or window == janela4 or window == janela5 ) and (events == sg.WIN_CLOSED or events == "Fechar"):
+  if casoPararPrograma(window,janela1,janela2,janela3,janela4,janela5,events):
     break
   elif window == janela1 and events == "Sortear":
     numeroMaximo = int(values['numero'])
@@ -109,35 +93,22 @@ while True:
     janela2 = mostrarTelaPrimeiroChute(numeroMaximo)
   elif window == janela2 and events == "Chutar Número":
     chute = int(values['numero'])
-    if chute == numeroSortido:
-      janela2.hide()
-      janela5 = mostrarTelaDeSucesso(numeroSortido)
-    elif chute < numeroSortido:
-      janela2.hide()
-      janela3 = mostrarTelaChuteFoiMenor(numeroMaximo)
-    elif chute > numeroSortido:
-      janela2.hide()
-      janela4 = mostrarTelaChuteFoiMaior(numeroMaximo)
+    janela2.hide()
+    janela5 = func0(chute,numeroSortido)
+    janela3 = func1(chute,numeroSortido,numeroMaximo)
+    janela4 = func2(chute,numeroSortido,numeroMaximo)
   elif window == janela3 and events == "Chutar Número":
     chute = int(values['numero'])
-    if chute == numeroSortido:
-      janela3.hide()
-      janela5 = mostrarTelaDeSucesso(numeroSortido)
-    elif chute < numeroSortido:
-      janela3 = mostrarTelaChuteFoiMenor(numeroMaximo)
-    elif chute > numeroSortido:
-      janela3.hide()
-      janela4 = mostrarTelaChuteFoiMaior(numeroMaximo)
+    janela3.hide()
+    janela5 = func0(chute,numeroSortido)
+    janela3 = func1(chute,numeroSortido,numeroMaximo)
+    janela4 = func2(chute,numeroSortido,numeroMaximo)
   elif window == janela4 and events == "Chutar Número":
     chute = int(values['numero'])
-    if chute == numeroSortido:
-      janela4.hide()
-      janela5 = mostrarTelaDeSucesso(numeroSortido)
-    elif chute < numeroSortido:
-      janela4.hide()
-      janela3 = mostrarTelaChuteFoiMenor(numeroMaximo)
-    elif chute > numeroSortido:
-      janela4 = mostrarTelaChuteFoiMaior(numeroMaximo)
-  elif window == janela5 and events == "Advinhar Outro Número":
+    janela4.hide()
+    janela5 = func0(chute,numeroSortido)
+    janela3 = func1(chute,numeroSortido,numeroMaximo)
+    janela4 = func2(chute,numeroSortido,numeroMaximo)
+  elif  window == janela5 and events == "Advinhar Outro Número":
     janela5.hide()
     janela1 = mostrarTelaInicial()
